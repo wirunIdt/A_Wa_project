@@ -235,6 +235,43 @@
   .tip-text { font-size:13px; color:#5d4037; line-height:1.6; }
   .tip-text strong { color:#e65100; }
 
+  /* SYNONYM */
+  .syn-search-wrap { position:relative; margin-bottom:20px; }
+  .syn-search { width:100%; padding:12px 16px 12px 42px; border:2px solid var(--border); border-radius:30px; font-size:14px; font-family:'Poppins',sans-serif; background:#fff; color:var(--text); outline:none; transition:.2s; }
+  .syn-search:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(25,201,151,0.12); }
+  .syn-search-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:16px; }
+  .syn-filter-bar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+  .syn-filter-btn { padding:6px 14px; border-radius:20px; border:2px solid var(--border); background:#fff; font-size:12px; font-weight:600; cursor:pointer; color:var(--text-muted); font-family:'Poppins',sans-serif; transition:.15s; }
+  .syn-filter-btn:hover, .syn-filter-btn.active { background:var(--green); border-color:var(--green); color:#fff; }
+  .syn-grid { display:grid; gap:14px; }
+  .syn-card {
+    background:var(--card); border-radius:var(--radius); padding:18px 18px 14px;
+    box-shadow:var(--shadow); border:1px solid var(--border);
+    transition:transform .2s, box-shadow .2s;
+  }
+  .syn-card:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(25,201,151,0.13); }
+  .syn-card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px; }
+  .syn-main-word { font-family:'Nunito',sans-serif; font-weight:900; font-size:20px; color:var(--text); }
+  .syn-pos-tag { font-size:10px; font-weight:700; border-radius:8px; padding:3px 9px; flex-shrink:0; margin-top:4px; }
+  .syn-meaning-th { font-size:12.5px; color:var(--text-muted); margin-bottom:12px; line-height:1.5; }
+  .syn-meaning-th strong { color:var(--text); }
+  .syn-list { display:flex; flex-wrap:wrap; gap:8px; }
+  .syn-pill {
+    display:flex; align-items:center; gap:6px;
+    background:#f4fbf8; border:1px solid var(--border);
+    border-radius:20px; padding:5px 12px;
+    font-size:12px; cursor:pointer; transition:.15s;
+  }
+  .syn-pill:hover { background:var(--green-light); border-color:var(--green); }
+  .syn-pill-word { font-weight:700; color:var(--text); }
+  .syn-pill-th { color:var(--text-muted); font-size:11px; }
+  .syn-card[data-pos="verb"] .syn-pos-tag { background:#e8f5e9; color:#2e7d32; }
+  .syn-card[data-pos="adj"] .syn-pos-tag { background:#fff8e1; color:#f57f17; }
+  .syn-card[data-pos="noun"] .syn-pos-tag { background:#e3f2fd; color:#1565c0; }
+  .syn-card[data-pos="adv"] .syn-pos-tag { background:var(--purple-light); color:var(--purple); }
+  .syn-hidden { display:none !important; }
+  .syn-count { font-size:12px; color:var(--text-muted); margin-bottom:12px; }
+
   /* FOOTER */
   footer { background:#0d2b22; color:rgba(255,255,255,0.5); text-align:center; padding:24px 20px; font-size:12px; margin-top:40px; }
   footer strong { color:var(--green); }
@@ -264,6 +301,7 @@
     <a class="nav-link active" href="#mindmap">Map</a>
     <a class="nav-link" href="#structure">Structure</a>
     <a class="nav-link" href="#examples">Examples</a>
+    <a class="nav-link" href="#synonyms">Synonyms</a>
     <a class="nav-link" href="#test">Test</a>
   </div>
 </nav>
@@ -698,11 +736,357 @@
 
 <div class="divider"></div>
 
+<!-- SYNONYMS -->
+<section id="synonyms">
+  <div class="section-label">Synonyms</div>
+  <h2 class="section-title">คลังคำ <em>Synonyms</em></h2>
+  <p class="section-desc">20 คำหลัก พร้อม 5 คำพ้องความหมาย แต่สะกดต่างกัน — กดที่ pill เพื่อดูความหมาย</p>
+
+  <div class="syn-search-wrap">
+    <span class="syn-search-icon">🔍</span>
+    <input class="syn-search" type="text" id="synSearch" placeholder="ค้นหาคำ เช่น happy, big, show..." oninput="filterSynonyms()">
+  </div>
+  <div class="syn-filter-bar">
+    <button class="syn-filter-btn active" onclick="filterPos('all',this)">🔤 ทั้งหมด</button>
+    <button class="syn-filter-btn" onclick="filterPos('verb',this)">🟢 Verb</button>
+    <button class="syn-filter-btn" onclick="filterPos('adj',this)">🟡 Adjective</button>
+    <button class="syn-filter-btn" onclick="filterPos('noun',this)">🔵 Noun</button>
+    <button class="syn-filter-btn" onclick="filterPos('adv',this)">🟣 Adverb</button>
+  </div>
+  <div class="syn-count" id="synCount">แสดง 20 คำ</div>
+
+  <div class="syn-grid" id="synGrid">
+
+    <!-- 1. HAPPY -->
+    <div class="syn-card" data-pos="adj" data-words="happy joyful glad cheerful pleased content delighted">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Happy</div>
+        <span class="syn-pos-tag">Adjective</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>มีความสุข, รู้สึกดี</strong> — รู้สึกพึงพอใจหรือยินดี</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Joyful</span><span class="syn-pill-th">เปี่ยมสุข</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Glad</span><span class="syn-pill-th">ยินดี</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Cheerful</span><span class="syn-pill-th">ร่าเริง</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Pleased</span><span class="syn-pill-th">พอใจ</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Delighted</span><span class="syn-pill-th">ดีใจมาก</span></div>
+      </div>
+    </div>
+
+    <!-- 2. SAD -->
+    <div class="syn-card" data-pos="adj" data-words="sad unhappy sorrowful miserable gloomy depressed melancholy">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Sad</div>
+        <span class="syn-pos-tag">Adjective</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>เศร้า, ไม่มีความสุข</strong> — รู้สึกเจ็บปวดทางใจ</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Sorrowful</span><span class="syn-pill-th">โศกเศร้า</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Miserable</span><span class="syn-pill-th">ทุกข์ทรมาน</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Gloomy</span><span class="syn-pill-th">หม่นหมอง</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Depressed</span><span class="syn-pill-th">หดหู่</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Melancholy</span><span class="syn-pill-th">เศร้าหมอง</span></div>
+      </div>
+    </div>
+
+    <!-- 3. BIG -->
+    <div class="syn-card" data-pos="adj" data-words="big large huge enormous giant vast immense">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Big</div>
+        <span class="syn-pos-tag">Adjective</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>ใหญ่, มีขนาดมาก</strong> — มีขนาดหรือปริมาณมาก</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Large</span><span class="syn-pill-th">ใหญ่โต</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Huge</span><span class="syn-pill-th">มหึมา</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Enormous</span><span class="syn-pill-th">ยักษ์ใหญ่</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Vast</span><span class="syn-pill-th">กว้างใหญ่</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Immense</span><span class="syn-pill-th">มหาศาล</span></div>
+      </div>
+    </div>
+
+    <!-- 4. SMALL -->
+    <div class="syn-card" data-pos="adj" data-words="small little tiny miniature petite minute compact">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Small</div>
+        <span class="syn-pos-tag">Adjective</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>เล็ก, มีขนาดน้อย</strong> — มีขนาดหรือปริมาณน้อย</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Little</span><span class="syn-pill-th">เล็กน้อย</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Tiny</span><span class="syn-pill-th">จิ๋ว</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Miniature</span><span class="syn-pill-th">จำลอง/จิ๋ว</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Petite</span><span class="syn-pill-th">บอบบาง</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Minute</span><span class="syn-pill-th">เล็กละเอียด</span></div>
+      </div>
+    </div>
+
+    <!-- 5. FAST -->
+    <div class="syn-card" data-pos="adj" data-words="fast quick swift rapid speedy hasty brisk">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Fast</div>
+        <span class="syn-pos-tag">Adjective</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>เร็ว, รวดเร็ว</strong> — เคลื่อนที่หรือทำสิ่งต่างๆ ได้อย่างรวดเร็ว</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Quick</span><span class="syn-pill-th">เร็ว</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Swift</span><span class="syn-pill-th">ว่องไว</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Rapid</span><span class="syn-pill-th">รวดเร็ว</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Speedy</span><span class="syn-pill-th">ฉับไว</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Brisk</span><span class="syn-pill-th">คล่องแคล่ว</span></div>
+      </div>
+    </div>
+
+    <!-- 6. SHOW -->
+    <div class="syn-card" data-pos="verb" data-words="show display present demonstrate exhibit reveal reveal">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Show</div>
+        <span class="syn-pos-tag">Verb</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>แสดง, นำเสนอ</strong> — ทำให้มองเห็นหรือเข้าใจสิ่งใดสิ่งหนึ่ง</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Display</span><span class="syn-pill-th">แสดงออก</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Present</span><span class="syn-pill-th">นำเสนอ</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Demonstrate</span><span class="syn-pill-th">สาธิต</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Exhibit</span><span class="syn-pill-th">จัดแสดง</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Reveal</span><span class="syn-pill-th">เปิดเผย</span></div>
+      </div>
+    </div>
+
+    <!-- 7. GET -->
+    <div class="syn-card" data-pos="verb" data-words="get obtain acquire receive gain secure attain">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Get</div>
+        <span class="syn-pos-tag">Verb</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>ได้รับ, หามาได้</strong> — รับหรือได้มาซึ่งบางสิ่ง</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Obtain</span><span class="syn-pill-th">ได้มา</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Acquire</span><span class="syn-pill-th">ได้รับมา</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Receive</span><span class="syn-pill-th">รับ</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Gain</span><span class="syn-pill-th">ได้กำไร</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Attain</span><span class="syn-pill-th">บรรลุ</span></div>
+      </div>
+    </div>
+
+    <!-- 8. WALK -->
+    <div class="syn-card" data-pos="verb" data-words="walk stroll march stride wander roam trek">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Walk</div>
+        <span class="syn-pos-tag">Verb</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>เดิน</strong> — เคลื่อนที่ด้วยเท้าในอัตราปกติ</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Stroll</span><span class="syn-pill-th">เดินเล่น</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">March</span><span class="syn-pill-th">เดินแถว</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Stride</span><span class="syn-pill-th">ย่างก้าวยาว</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Wander</span><span class="syn-pill-th">เดินเตร็ดเตร่</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Trek</span><span class="syn-pill-th">เดินทางไกล</span></div>
+      </div>
+    </div>
+
+    <!-- 9. THINK -->
+    <div class="syn-card" data-pos="verb" data-words="think consider ponder reflect contemplate believe assume">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Think</div>
+        <span class="syn-pos-tag">Verb</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>คิด, ครุ่นคิด</strong> — ใช้จิตใจพิจารณาสิ่งใดสิ่งหนึ่ง</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Consider</span><span class="syn-pill-th">พิจารณา</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Ponder</span><span class="syn-pill-th">ไตร่ตรอง</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Reflect</span><span class="syn-pill-th">ทบทวน</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Contemplate</span><span class="syn-pill-th">นึกคิด</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Believe</span><span class="syn-pill-th">เชื่อ</span></div>
+      </div>
+    </div>
+
+    <!-- 10. CHANGE -->
+    <div class="syn-card" data-pos="verb" data-words="change alter modify transform shift adjust vary">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Change</div>
+        <span class="syn-pos-tag">Verb</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>เปลี่ยนแปลง</strong> — ทำให้แตกต่างจากเดิม</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Alter</span><span class="syn-pill-th">ดัดแปลง</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Modify</span><span class="syn-pill-th">ปรับแก้</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Transform</span><span class="syn-pill-th">แปรเปลี่ยน</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Shift</span><span class="syn-pill-th">เลื่อนย้าย</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Adjust</span><span class="syn-pill-th">ปรับ</span></div>
+      </div>
+    </div>
+
+    <!-- 11. SMART -->
+    <div class="syn-card" data-pos="adj" data-words="smart intelligent clever bright brilliant sharp gifted">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Smart</div>
+        <span class="syn-pos-tag">Adjective</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>ฉลาด, มีไหวพริบ</strong> — มีความสามารถทางจิตใจสูง</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Intelligent</span><span class="syn-pill-th">มีสติปัญญา</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Clever</span><span class="syn-pill-th">ชาญฉลาด</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Bright</span><span class="syn-pill-th">หัวดี</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Brilliant</span><span class="syn-pill-th">ยอดเยี่ยม</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Sharp</span><span class="syn-pill-th">แหลมคม</span></div>
+      </div>
+    </div>
+
+    <!-- 12. BRAVE -->
+    <div class="syn-card" data-pos="adj" data-words="brave courageous bold fearless daring heroic valiant">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Brave</div>
+        <span class="syn-pos-tag">Adjective</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>กล้าหาญ</strong> — ไม่กลัวอันตรายหรือความยากลำบาก</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Courageous</span><span class="syn-pill-th">มีความกล้า</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Bold</span><span class="syn-pill-th">กล้าแสดงออก</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Fearless</span><span class="syn-pill-th">ไร้ความกลัว</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Daring</span><span class="syn-pill-th">ท้าทาย</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Valiant</span><span class="syn-pill-th">กล้าหาญ/เด็ดเดี่ยว</span></div>
+      </div>
+    </div>
+
+    <!-- 13. HOUSE -->
+    <div class="syn-card" data-pos="noun" data-words="house home dwelling residence abode dwelling place">
+      <div class="syn-card-head">
+        <div class="syn-main-word">House</div>
+        <span class="syn-pos-tag">Noun</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>บ้าน, ที่อยู่อาศัย</strong> — สถานที่ที่คนอาศัยอยู่</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Home</span><span class="syn-pill-th">บ้าน/ครอบครัว</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Dwelling</span><span class="syn-pill-th">ที่พักอาศัย</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Residence</span><span class="syn-pill-th">ที่พำนัก</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Abode</span><span class="syn-pill-th">ที่อยู่</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Lodging</span><span class="syn-pill-th">ที่พัก</span></div>
+      </div>
+    </div>
+
+    <!-- 14. WORK -->
+    <div class="syn-card" data-pos="noun" data-words="work job task occupation career profession employment">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Work</div>
+        <span class="syn-pos-tag">Noun</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>งาน, การทำงาน</strong> — กิจกรรมที่ทำเพื่อบรรลุเป้าหมาย</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Job</span><span class="syn-pill-th">งาน</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Task</span><span class="syn-pill-th">ภารกิจ</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Occupation</span><span class="syn-pill-th">อาชีพ</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Career</span><span class="syn-pill-th">เส้นทางอาชีพ</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Employment</span><span class="syn-pill-th">การจ้างงาน</span></div>
+      </div>
+    </div>
+
+    <!-- 15. IDEA -->
+    <div class="syn-card" data-pos="noun" data-words="idea concept notion thought plan suggestion proposal">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Idea</div>
+        <span class="syn-pos-tag">Noun</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>ความคิด, แนวคิด</strong> — สิ่งที่เกิดขึ้นในใจหรือจินตนาการ</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Concept</span><span class="syn-pill-th">แนวคิด</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Notion</span><span class="syn-pill-th">ความเชื่อ/แนวคิด</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Thought</span><span class="syn-pill-th">ความคิด</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Plan</span><span class="syn-pill-th">แผน</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Suggestion</span><span class="syn-pill-th">ข้อเสนอแนะ</span></div>
+      </div>
+    </div>
+
+    <!-- 16. HELP -->
+    <div class="syn-card" data-pos="verb" data-words="help assist support aid guide facilitate back">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Help</div>
+        <span class="syn-pos-tag">Verb</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>ช่วยเหลือ, สนับสนุน</strong> — ทำให้ง่ายขึ้นหรือให้ความช่วยเหลือ</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Assist</span><span class="syn-pill-th">ช่วยเหลือ</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Support</span><span class="syn-pill-th">สนับสนุน</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Aid</span><span class="syn-pill-th">ให้ความช่วย</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Guide</span><span class="syn-pill-th">นำทาง</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Facilitate</span><span class="syn-pill-th">อำนวยความสะดวก</span></div>
+      </div>
+    </div>
+
+    <!-- 17. QUICKLY -->
+    <div class="syn-card" data-pos="adv" data-words="quickly rapidly swiftly promptly hastily speedily instantly">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Quickly</div>
+        <span class="syn-pos-tag">Adverb</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>อย่างรวดเร็ว</strong> — กระทำสิ่งต่างๆ ด้วยความเร็วสูง</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Rapidly</span><span class="syn-pill-th">อย่างรวดเร็ว</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Swiftly</span><span class="syn-pill-th">อย่างว่องไว</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Promptly</span><span class="syn-pill-th">อย่างทันที</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Hastily</span><span class="syn-pill-th">อย่างรีบเร่ง</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Instantly</span><span class="syn-pill-th">ทันทีทันใด</span></div>
+      </div>
+    </div>
+
+    <!-- 18. DIFFICULT -->
+    <div class="syn-card" data-pos="adj" data-words="difficult hard challenging tough demanding complex arduous">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Difficult</div>
+        <span class="syn-pos-tag">Adjective</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>ยาก, ยุ่งยาก</strong> — ต้องใช้ความพยายามหรือทักษะมาก</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Hard</span><span class="syn-pill-th">ยาก/แข็ง</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Challenging</span><span class="syn-pill-th">ท้าทาย</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Tough</span><span class="syn-pill-th">ยากลำบาก</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Demanding</span><span class="syn-pill-th">ต้องการมาก</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Arduous</span><span class="syn-pill-th">ลำบากมาก</span></div>
+      </div>
+    </div>
+
+    <!-- 19. LOVE -->
+    <div class="syn-card" data-pos="noun" data-words="love affection devotion adoration fondness attachment passion">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Love</div>
+        <span class="syn-pos-tag">Noun</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>ความรัก, ความผูกพัน</strong> — ความรู้สึกผูกพันและห่วงใยอย่างลึกซึ้ง</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Affection</span><span class="syn-pill-th">ความรักใคร่</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Devotion</span><span class="syn-pill-th">ความทุ่มเท</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Adoration</span><span class="syn-pill-th">การบูชา/รัก</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Fondness</span><span class="syn-pill-th">ความชื่นชอบ</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Passion</span><span class="syn-pill-th">ความหลงใหล</span></div>
+      </div>
+    </div>
+
+    <!-- 20. BEAUTIFUL -->
+    <div class="syn-card" data-pos="adj" data-words="beautiful gorgeous stunning attractive lovely pretty elegant">
+      <div class="syn-card-head">
+        <div class="syn-main-word">Beautiful</div>
+        <span class="syn-pos-tag">Adjective</span>
+      </div>
+      <div class="syn-meaning-th">🇹🇭 <strong>สวยงาม, งดงาม</strong> — ทำให้เกิดความพึงพอใจด้านสุนทรียะ</div>
+      <div class="syn-list">
+        <div class="syn-pill"><span class="syn-pill-word">Gorgeous</span><span class="syn-pill-th">สวยมาก</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Stunning</span><span class="syn-pill-th">ตะลึงในความงาม</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Attractive</span><span class="syn-pill-th">ดึงดูดใจ</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Lovely</span><span class="syn-pill-th">น่ารัก</span></div>
+        <div class="syn-pill"><span class="syn-pill-word">Elegant</span><span class="syn-pill-th">สง่างาม</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
 <!-- TEST -->
 <section id="test">
   <div class="section-label">Quiz Time</div>
   <h2 class="section-title">แบบทดสอบ <em>If Clauses</em></h2>
-  <p class="section-desc">10 ข้อ เลือกคำตอบที่ถูกต้อง มีคำอธิบายทุกข้อ</p>
+  <p class="section-desc">20 ข้อ (If Clauses 10 ข้อ + Synonyms 10 ข้อ) เลือกคำตอบที่ถูกต้อง มีคำอธิบายทุกข้อ</p>
 
   <div class="test-wrap">
     <div class="progress-bar-wrap">
@@ -711,7 +1095,7 @@
 
     <!-- Q1 -->
     <div class="q-card" id="q1">
-      <div class="q-num">ข้อที่ 1 / 10</div>
+      <div class="q-num">ข้อที่ 1 / 20</div>
       <div class="q-text">If you <span class="q-blank">______</span> water, it freezes.</div>
       <div class="q-context">เลือกกริยาที่ถูกต้องสำหรับ Zero Conditional</div>
       <div class="choices">
@@ -727,7 +1111,7 @@
 
     <!-- Q2 -->
     <div class="q-card" id="q2">
-      <div class="q-num">ข้อที่ 2 / 10</div>
+      <div class="q-num">ข้อที่ 2 / 20</div>
       <div class="q-text">If she <span class="q-blank">______</span> harder, she will get a promotion.</div>
       <div class="q-context">First Conditional — เลือกรูปกริยาที่ถูก</div>
       <div class="choices">
@@ -743,7 +1127,7 @@
 
     <!-- Q3 -->
     <div class="q-card" id="q3">
-      <div class="q-num">ข้อที่ 3 / 10</div>
+      <div class="q-num">ข้อที่ 3 / 20</div>
       <div class="q-text">If I <span class="q-blank">______</span> a superpower, I would fly.</div>
       <div class="q-context">Second Conditional — สมมติที่ไม่เป็นจริง</div>
       <div class="choices">
@@ -759,7 +1143,7 @@
 
     <!-- Q4 -->
     <div class="q-card" id="q4">
-      <div class="q-num">ข้อที่ 4 / 10</div>
+      <div class="q-num">ข้อที่ 4 / 20</div>
       <div class="q-text">If they had arrived earlier, they <span class="q-blank">______</span> the concert.</div>
       <div class="q-context">Third Conditional — เลือก main clause ที่ถูก</div>
       <div class="choices">
@@ -775,7 +1159,7 @@
 
     <!-- Q5 -->
     <div class="q-card" id="q5">
-      <div class="q-num">ข้อที่ 5 / 10</div>
+      <div class="q-num">ข้อที่ 5 / 20</div>
       <div class="q-text">เลือกประโยค Second Conditional ที่ถูกต้อง</div>
       <div class="choices">
         <button class="choice-btn" onclick="answer(5,'A','C')"><span class="choice-letter">A</span>If I am you, I will apologize.</button>
@@ -790,7 +1174,7 @@
 
     <!-- Q6 -->
     <div class="q-card" id="q6">
-      <div class="q-num">ข้อที่ 6 / 10</div>
+      <div class="q-num">ข้อที่ 6 / 20</div>
       <div class="q-text">What type of conditional is this?<br><em style="color:var(--green-dark)">"If you press this button, the alarm rings."</em></div>
       <div class="choices">
         <button class="choice-btn" onclick="answer(6,'A','A')"><span class="choice-letter">A</span>Zero Conditional</button>
@@ -805,7 +1189,7 @@
 
     <!-- Q7 -->
     <div class="q-card" id="q7">
-      <div class="q-num">ข้อที่ 7 / 10</div>
+      <div class="q-num">ข้อที่ 7 / 20</div>
       <div class="q-text">If the weather <span class="q-blank">______</span> nice this weekend, we will have a picnic.</div>
       <div class="q-context">เลือกกริยาที่เหมาะสม</div>
       <div class="choices">
@@ -821,7 +1205,7 @@
 
     <!-- Q8 -->
     <div class="q-card" id="q8">
-      <div class="q-num">ข้อที่ 8 / 10</div>
+      <div class="q-num">ข้อที่ 8 / 20</div>
       <div class="q-text">ประโยค Third Conditional แบบปฏิเสธที่ถูกต้องคือข้อใด?</div>
       <div class="choices">
         <button class="choice-btn" onclick="answer(8,'A','D')"><span class="choice-letter">A</span>If he didn't study, he wouldn't pass.</button>
@@ -836,7 +1220,7 @@
 
     <!-- Q9 -->
     <div class="q-card" id="q9">
-      <div class="q-num">ข้อที่ 9 / 10</div>
+      <div class="q-num">ข้อที่ 9 / 20</div>
       <div class="q-text">"What <span class="q-blank">______</span> you do if you found a wallet on the street?"</div>
       <div class="q-context">คำถาม Second Conditional</div>
       <div class="choices">
@@ -852,7 +1236,7 @@
 
     <!-- Q10 -->
     <div class="q-card" id="q10">
-      <div class="q-num">ข้อที่ 10 / 10</div>
+      <div class="q-num">ข้อที่ 10 / 20</div>
       <div class="q-text">เลือกประโยคที่ใช้ conditional ได้ถูกต้องที่สุด</div>
       <div class="choices">
         <button class="choice-btn" onclick="answer(10,'A','B')"><span class="choice-letter">A</span>If I will see him, I tell him the news.</button>
@@ -865,13 +1249,172 @@
       </div>
     </div>
 
+    </div>
+
+    <!-- SYNONYM SECTION DIVIDER IN TEST -->
+    <div style="margin:28px 0 20px;padding:12px 16px;background:linear-gradient(135deg,var(--blue-light),var(--green-light));border-radius:12px;text-align:center;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green-dark);margin-bottom:4px;">📚 Synonym Quiz</div>
+      <div style="font-size:13px;color:var(--text-muted);">ข้อ 11–20: เลือก synonym ที่ถูกต้องของแต่ละคำ</div>
+    </div>
+
+    <!-- Q11 -->
+    <div class="q-card" id="q11">
+      <div class="q-num">ข้อที่ 11 / 20</div>
+      <div class="q-text">คำใดเป็น Synonym ของ <strong style="color:var(--green-dark)">"Happy"</strong>?</div>
+      <div class="q-context">เลือกคำที่มีความหมายใกล้เคียงที่สุด</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="answer(11,'A','B')"><span class="choice-letter">A</span>Angry — โกรธ</button>
+        <button class="choice-btn" onclick="answer(11,'B','B')"><span class="choice-letter">B</span>Joyful — เปี่ยมสุข</button>
+        <button class="choice-btn" onclick="answer(11,'C','B')"><span class="choice-letter">C</span>Tired — เหนื่อย</button>
+        <button class="choice-btn" onclick="answer(11,'D','B')"><span class="choice-letter">D</span>Confused — สับสน</button>
+      </div>
+      <div class="feedback" id="fb11">
+        <strong>✅ ถูกต้อง!</strong> ตอบ B: Joyful — "Joyful" แปลว่า เปี่ยมสุข มีความหมายเหมือน Happy เพราะทั้งคู่หมายถึงความรู้สึกมีความสุข ส่วนคำอื่นมีความหมายต่างออกไปโดยสิ้นเชิง
+      </div>
+    </div>
+
+    <!-- Q12 -->
+    <div class="q-card" id="q12">
+      <div class="q-num">ข้อที่ 12 / 20</div>
+      <div class="q-text">คำใด <strong>ไม่ใช่</strong> Synonym ของ <strong style="color:var(--orange)">"Big"</strong>?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="answer(12,'A','D')"><span class="choice-letter">A</span>Huge — มหึมา</button>
+        <button class="choice-btn" onclick="answer(12,'B','D')"><span class="choice-letter">B</span>Enormous — ยักษ์ใหญ่</button>
+        <button class="choice-btn" onclick="answer(12,'C','D')"><span class="choice-letter">C</span>Vast — กว้างใหญ่</button>
+        <button class="choice-btn" onclick="answer(12,'D','D')"><span class="choice-letter">D</span>Tiny — จิ๋ว</button>
+      </div>
+      <div class="feedback" id="fb12">
+        <strong>✅ ถูกต้อง!</strong> ตอบ D: Tiny — "Tiny" แปลว่า จิ๋ว/เล็กมาก ซึ่งเป็น antonym (คำตรงข้าม) ของ Big ไม่ใช่ synonym ส่วน Huge, Enormous, Vast ล้วนหมายถึงขนาดใหญ่เหมือนกัน
+      </div>
+    </div>
+
+    <!-- Q13 -->
+    <div class="q-card" id="q13">
+      <div class="q-num">ข้อที่ 13 / 20</div>
+      <div class="q-text">"She is very <strong style="color:var(--blue)">intelligent</strong>." คำที่ขีดเส้นใต้ มี synonym คือข้อใด?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="answer(13,'A','C')"><span class="choice-letter">A</span>Lazy — ขี้เกียจ</button>
+        <button class="choice-btn" onclick="answer(13,'B','C')"><span class="choice-letter">B</span>Nervous — ประหม่า</button>
+        <button class="choice-btn" onclick="answer(13,'C','C')"><span class="choice-letter">C</span>Brilliant — ยอดเยี่ยม/ฉลาด</button>
+        <button class="choice-btn" onclick="answer(13,'D','C')"><span class="choice-letter">D</span>Honest — ซื่อสัตย์</button>
+      </div>
+      <div class="feedback" id="fb13">
+        <strong>✅ ถูกต้อง!</strong> ตอบ C: Brilliant — "Intelligent" และ "Brilliant" ต่างหมายถึงความฉลาดเก่งกาจ ทั้งคู่ใช้แทนกันได้ในบริบทส่วนใหญ่ คำอื่นมีความหมายที่ต่างออกไป
+      </div>
+    </div>
+
+    <!-- Q14 -->
+    <div class="q-card" id="q14">
+      <div class="q-num">ข้อที่ 14 / 20</div>
+      <div class="q-text">เลือก synonym ของ <strong style="color:var(--purple)">"Difficult"</strong> ที่เหมาะสมที่สุด</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="answer(14,'A','A')"><span class="choice-letter">A</span>Challenging — ท้าทาย</button>
+        <button class="choice-btn" onclick="answer(14,'B','A')"><span class="choice-letter">B</span>Simple — ง่าย</button>
+        <button class="choice-btn" onclick="answer(14,'C','A')"><span class="choice-letter">C</span>Pleasant — น่ารื่นรมย์</button>
+        <button class="choice-btn" onclick="answer(14,'D','A')"><span class="choice-letter">D</span>Smooth — ราบรื่น</button>
+      </div>
+      <div class="feedback" id="fb14">
+        <strong>✅ ถูกต้อง!</strong> ตอบ A: Challenging — "Challenging" และ "Difficult" ต่างหมายถึงสิ่งที่ต้องใช้ความพยายามมาก ส่วน Simple, Pleasant, Smooth ล้วนมีความหมายในเชิงบวกหรือง่าย ซึ่งตรงข้ามกัน
+      </div>
+    </div>
+
+    <!-- Q15 -->
+    <div class="q-card" id="q15">
+      <div class="q-num">ข้อที่ 15 / 20</div>
+      <div class="q-text">คำว่า <strong style="color:var(--green-dark)">"Obtain"</strong> เป็น synonym ของคำใด?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="answer(15,'A','C')"><span class="choice-letter">A</span>Lose — สูญเสีย</button>
+        <button class="choice-btn" onclick="answer(15,'B','C')"><span class="choice-letter">B</span>Give — ให้</button>
+        <button class="choice-btn" onclick="answer(15,'C','C')"><span class="choice-letter">C</span>Get — ได้รับ</button>
+        <button class="choice-btn" onclick="answer(15,'D','C')"><span class="choice-letter">D</span>Forget — ลืม</button>
+      </div>
+      <div class="feedback" id="fb15">
+        <strong>✅ ถูกต้อง!</strong> ตอบ C: Get — "Obtain" แปลว่า ได้รับ/หามาได้ มีความหมายเดียวกับ "Get" ในบริบทของการได้รับบางสิ่ง เช่น "I obtained / got good results." ส่วนคำอื่นมีความหมายตรงข้าม
+      </div>
+    </div>
+
+    <!-- Q16 -->
+    <div class="q-card" id="q16">
+      <div class="q-num">ข้อที่ 16 / 20</div>
+      <div class="q-text">"The police <strong style="color:var(--blue)">______</strong> the protest." เลือกคำที่เป็น synonym ของ "show/display"</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="answer(16,'A','B')"><span class="choice-letter">A</span>ignored</button>
+        <button class="choice-btn" onclick="answer(16,'B','B')"><span class="choice-letter">B</span>demonstrated</button>
+        <button class="choice-btn" onclick="answer(16,'C','B')"><span class="choice-letter">C</span>avoided</button>
+        <button class="choice-btn" onclick="answer(16,'D','B')"><span class="choice-letter">D</span>cancelled</button>
+      </div>
+      <div class="feedback" id="fb16">
+        <strong>✅ ถูกต้อง!</strong> ตอบ B: demonstrated — "Demonstrate" เป็น synonym ของ "show/display" แปลว่า สาธิต/แสดงให้เห็น ในประโยคนี้หมายถึงตำรวจสลายการประท้วง (เดิมคำนี้มีความหมายว่า แสดงออก/ประท้วง ด้วย)
+      </div>
+    </div>
+
+    <!-- Q17 -->
+    <div class="q-card" id="q17">
+      <div class="q-num">ข้อที่ 17 / 20</div>
+      <div class="q-text">คำว่า <strong style="color:var(--orange)">"Gorgeous"</strong> เป็น synonym ของคำใด?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="answer(17,'A','D')"><span class="choice-letter">A</span>Ugly — น่าเกลียด</button>
+        <button class="choice-btn" onclick="answer(17,'B','D')"><span class="choice-letter">B</span>Dirty — สกปรก</button>
+        <button class="choice-btn" onclick="answer(17,'C','D')"><span class="choice-letter">C</span>Strange — แปลก</button>
+        <button class="choice-btn" onclick="answer(17,'D','D')"><span class="choice-letter">D</span>Beautiful — สวยงาม</button>
+      </div>
+      <div class="feedback" id="fb17">
+        <strong>✅ ถูกต้อง!</strong> ตอบ D: Beautiful — "Gorgeous" หมายถึง สวยงามมาก ตระการตา เป็น synonym ของ "Beautiful" โดย Gorgeous มีระดับความเข้มข้นสูงกว่า เหมือนกับการพูดว่า "สวยสุดๆ"
+      </div>
+    </div>
+
+    <!-- Q18 -->
+    <div class="q-card" id="q18">
+      <div class="q-num">ข้อที่ 18 / 20</div>
+      <div class="q-text">ข้อใดคือคู่ synonym ที่ถูกต้อง?</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="answer(18,'A','C')"><span class="choice-letter">A</span>Brave — Fearful (กล้า — กลัว)</button>
+        <button class="choice-btn" onclick="answer(18,'B','C')"><span class="choice-letter">B</span>Fast — Slow (เร็ว — ช้า)</button>
+        <button class="choice-btn" onclick="answer(18,'C','C')"><span class="choice-letter">C</span>Change — Alter (เปลี่ยน — ดัดแปลง)</button>
+        <button class="choice-btn" onclick="answer(18,'D','C')"><span class="choice-letter">D</span>Help — Hinder (ช่วย — ขัดขวาง)</button>
+      </div>
+      <div class="feedback" id="fb18">
+        <strong>✅ ถูกต้อง!</strong> ตอบ C: Change – Alter — ทั้งสองคำมีความหมายว่า เปลี่ยนแปลง/ดัดแปลง จึงเป็น synonym กัน ส่วนข้ออื่นล้วนเป็นคู่ antonym (ความหมายตรงข้าม)
+      </div>
+    </div>
+
+    <!-- Q19 -->
+    <div class="q-card" id="q19">
+      <div class="q-num">ข้อที่ 19 / 20</div>
+      <div class="q-text">"She <strong style="color:var(--green-dark)">______</strong> by the window for a long time." เลือก synonym ของ "walked slowly/wandered"</div>
+      <div class="choices">
+        <button class="choice-btn" onclick="answer(19,'A','B')"><span class="choice-letter">A</span>sprinted</button>
+        <button class="choice-btn" onclick="answer(19,'B','B')"><span class="choice-letter">B</span>strolled</button>
+        <button class="choice-btn" onclick="answer(19,'C','B')"><span class="choice-letter">C</span>jumped</button>
+        <button class="choice-btn" onclick="answer(19,'D','B')"><span class="choice-letter">D</span>crawled</button>
+      </div>
+      <div class="feedback" id="fb19">
+        <strong>✅ ถูกต้อง!</strong> ตอบ B: strolled — "Stroll" เป็น synonym ของ "walk" ในความหมายว่า เดินเล่นช้าๆ อย่างผ่อนคลาย "Sprint" = วิ่งเร็ว, "Jump" = กระโดด, "Crawl" = คลาน ซึ่งต่างจากการเดิน
+      </div>
+    </div>
+
+    <!-- Q20 -->
+    <div class="q-card" id="q20">
+      <div class="q-num">ข้อที่ 20 / 20</div>
+      <div class="q-text">คำว่า <strong style="color:var(--purple)">"Affection"</strong> เป็น synonym ของคำใดในประโยคนี้?<br><em style="font-size:13px;color:var(--text-muted)">"He showed great ______ for his family."</em></div>
+      <div class="choices">
+        <button class="choice-btn" onclick="answer(20,'A','B')"><span class="choice-letter">A</span>Hatred — ความเกลียดชัง</button>
+        <button class="choice-btn" onclick="answer(20,'B','B')"><span class="choice-letter">B</span>Love — ความรัก</button>
+        <button class="choice-btn" onclick="answer(20,'C','B')"><span class="choice-letter">C</span>Fear — ความกลัว</button>
+        <button class="choice-btn" onclick="answer(20,'D','B')"><span class="choice-letter">D</span>Confusion — ความสับสน</button>
+      </div>
+      <div class="feedback" id="fb20">
+        <strong>✅ ถูกต้อง!</strong> ตอบ B: Love — "Affection" แปลว่า ความรักใคร่ผูกพัน เป็น synonym ของ "Love" ความหมายใกล้เคียงกันมาก แต่ Affection มักหมายถึงความรักที่อ่อนโยนและความผูกพัน ไม่ใช่ความรุนแรงทางอารมณ์
+      </div>
+    </div>
+
     <div class="test-actions">
       <button class="btn-green" onclick="checkAll()">✅ ตรวจคำตอบ</button>
       <button class="btn-grey" onclick="resetTest()">🔄 ทำใหม่</button>
     </div>
 
     <div class="score-box" id="scoreBox">
-      <div class="score-big" id="scoreNum">0/10</div>
+      <div class="score-big" id="scoreNum">0/20</div>
       <div class="score-sub">คะแนนของคุณ</div>
       <div class="score-msg" id="scoreMsg"></div>
     </div>
@@ -884,6 +1427,35 @@
 </footer>
 
 <script>
+  // Synonym search & filter
+  let currentPos = 'all';
+
+  function filterSynonyms() {
+    const q = document.getElementById('synSearch').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.syn-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const words = (card.dataset.words || '').toLowerCase();
+      const pos = card.dataset.pos;
+      const matchSearch = !q || words.includes(q);
+      const matchPos = currentPos === 'all' || pos === currentPos;
+      if (matchSearch && matchPos) {
+        card.classList.remove('syn-hidden');
+        visible++;
+      } else {
+        card.classList.add('syn-hidden');
+      }
+    });
+    document.getElementById('synCount').textContent = 'แสดง ' + visible + ' คำ';
+  }
+
+  function filterPos(pos, btn) {
+    currentPos = pos;
+    document.querySelectorAll('.syn-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterSynonyms();
+  }
+
   // Tab switching
   function switchTab(id, btn) {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -905,10 +1477,15 @@
 
   // Test logic
   const answers = {};
-  const correctAnswers = { 1:'D', 2:'B', 3:'C', 4:'C', 5:'C', 6:'A', 7:'B', 8:'D', 9:'C', 10:'B' };
+  const correctAnswers = {
+    1:'D', 2:'B', 3:'C', 4:'C', 5:'C',
+    6:'A', 7:'B', 8:'D', 9:'C', 10:'B',
+    11:'B', 12:'D', 13:'C', 14:'A', 15:'C',
+    16:'B', 17:'D', 18:'C', 19:'B', 20:'B'
+  };
 
   function answer(qNum, chosen, correct) {
-    if (answers[qNum]) return; // already answered
+    if (answers[qNum]) return;
     answers[qNum] = chosen;
 
     const card = document.getElementById('q' + qNum);
@@ -931,18 +1508,16 @@
       fb.classList.add('wrong');
       fb.classList.remove('correct');
     }
-
     updateProgress();
   }
 
   function updateProgress() {
     const done = Object.keys(answers).length;
-    document.getElementById('progressBar').style.width = (done / 10 * 100) + '%';
+    document.getElementById('progressBar').style.width = (done / 20 * 100) + '%';
   }
 
   function checkAll() {
-    // auto-answer unanswered ones with wrong answer to show correct
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= 20; i++) {
       if (!answers[i]) {
         const correct = correctAnswers[i];
         const card = document.getElementById('q' + i);
@@ -961,27 +1536,49 @@
     updateProgress();
 
     let score = 0;
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= 20; i++) {
       if (answers[i] === correctAnswers[i]) score++;
     }
 
     const scoreBox = document.getElementById('scoreBox');
     scoreBox.classList.add('show');
-    document.getElementById('scoreNum').textContent = score + '/10';
+    document.getElementById('scoreNum').textContent = score + '/20';
 
     let msg = '';
-    if (score === 10) msg = '🏆 เยี่ยมมาก! คุณเชี่ยวชาญ If Clauses แล้ว!';
-    else if (score >= 8) msg = '🌟 ดีมาก! เข้าใจดีเกือบสมบูรณ์แล้ว';
-    else if (score >= 6) msg = '👍 ผ่าน! ลองทบทวนส่วนที่ผิดอีกครั้ง';
-    else if (score >= 4) msg = '📚 ยังต้องฝึกเพิ่ม ลองอ่านโครงสร้างใหม่';
-    else msg = '💪 ไม่เป็นไร! เรียนรู้ใหม่ได้เลย ลองทำอีกครั้ง!';
+    if (score === 20) msg = '🏆 Perfect! เก่งมากทั้ง If Clauses และ Synonyms!';
+    else if (score >= 17) msg = '🌟 ยอดเยี่ยม! เข้าใจเกือบสมบูรณ์แล้ว';
+    else if (score >= 14) msg = '👍 ดีมาก! ทบทวนข้อที่ผิดเพิ่มเติมนิดหน่อย';
+    else if (score >= 10) msg = '📚 พอใช้ได้! ลองอ่านทั้ง If Clauses และ Synonyms ใหม่อีกครั้ง';
+    else msg = '💪 ไม่เป็นไร! กลับไปอ่านบทเรียนแล้วลองทำใหม่';
     document.getElementById('scoreMsg').textContent = msg;
-
     scoreBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
+  const origTexts = {
+    1:'<strong>✅ ถูกต้อง!</strong> ตอบ D: cool — Zero Conditional ใช้ If + V1, V1 (present simple ทั้งสองส่วน) เพราะพูดถึงกฎธรรมชาติ',
+    2:'<strong>✅ ถูกต้อง!</strong> ตอบ B: works — First Conditional ใช้ If + V1 (present simple) ตามด้วย will + V1',
+    3:'<strong>✅ ถูกต้อง!</strong> ตอบ C: had — Second Conditional ใช้ If + V2 (past simple) + would + V1',
+    4:'<strong>✅ ถูกต้อง!</strong> ตอบ C: would have caught — Third Conditional ใช้ If + had + V3 ตามด้วย would have + V3',
+    5:'<strong>✅ ถูกต้อง!</strong> ตอบ C — Second Conditional ใช้ "were" (Subjunctive Mood) กับทุก subject และใช้ would ใน main clause',
+    6:'<strong>✅ ถูกต้อง!</strong> ตอบ A: Zero Conditional — ใช้ V1 ทั้งสองส่วน เป็นเหตุ-ผลที่แน่นอน',
+    7:'<strong>✅ ถูกต้อง!</strong> ตอบ B: is — First Conditional ใช้ V1 (present simple) ใน if clause',
+    8:'<strong>✅ ถูกต้อง!</strong> ตอบ D — Third Conditional ปฏิเสธใช้ "If + hadn\'t + V3, wouldn\'t have + V3"',
+    9:'<strong>✅ ถูกต้อง!</strong> ตอบ C: would — คำถาม Second Conditional ใช้ would ใน main clause',
+    10:'<strong>✅ ถูกต้อง!</strong> ตอบ B — First Conditional: If + V1 (see), will + V1 (tell)',
+    11:'<strong>✅ ถูกต้อง!</strong> ตอบ B: Joyful — synonym ของ Happy หมายถึงความรู้สึกมีความสุข',
+    12:'<strong>✅ ถูกต้อง!</strong> ตอบ D: Tiny — เป็น antonym ของ Big (เล็กมาก) ไม่ใช่ synonym',
+    13:'<strong>✅ ถูกต้อง!</strong> ตอบ C: Brilliant — synonym ของ Intelligent หมายถึงฉลาดเก่งกาจ',
+    14:'<strong>✅ ถูกต้อง!</strong> ตอบ A: Challenging — synonym ของ Difficult หมายถึงต้องใช้ความพยายาม',
+    15:'<strong>✅ ถูกต้อง!</strong> ตอบ C: Get — Obtain เป็น synonym ของ Get หมายถึงได้รับ',
+    16:'<strong>✅ ถูกต้อง!</strong> ตอบ B: demonstrated — Demonstrate เป็น synonym ของ Show/Display',
+    17:'<strong>✅ ถูกต้อง!</strong> ตอบ D: Beautiful — Gorgeous เป็น synonym ของ Beautiful',
+    18:'<strong>✅ ถูกต้อง!</strong> ตอบ C: Change – Alter — ทั้งสองคำหมายถึงการเปลี่ยนแปลง',
+    19:'<strong>✅ ถูกต้อง!</strong> ตอบ B: strolled — Stroll เป็น synonym ของ walk (เดินเล่นช้าๆ)',
+    20:'<strong>✅ ถูกต้อง!</strong> ตอบ B: Love — Affection เป็น synonym ของ Love หมายถึงความรักผูกพัน'
+  };
+
   function resetTest() {
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= 20; i++) {
       const card = document.getElementById('q' + i);
       const btns = card.querySelectorAll('.choice-btn');
       btns.forEach(b => {
@@ -990,19 +1587,6 @@
       });
       const fb = document.getElementById('fb' + i);
       fb.classList.remove('correct','wrong');
-      // reset text for wrong ones
-      const origTexts = {
-        1:'<strong>✅ ถูกต้อง!</strong> ตอบ D: cool — Zero Conditional ใช้ If + V1, V1 (present simple ทั้งสองส่วน) เพราะพูดถึงกฎธรรมชาติ: "If you cool water (below 0°C), it freezes."',
-        2:'<strong>✅ ถูกต้อง!</strong> ตอบ B: works — First Conditional ใช้ If + V1 (present simple) ตามด้วย will + V1 เพราะเป็นอนาคตที่มีโอกาสเกิดขึ้นจริง',
-        3:'<strong>✅ ถูกต้อง!</strong> ตอบ C: had — Second Conditional ใช้ If + V2 (past simple) + would + V1 เป็นการสมมติสิ่งที่ไม่เป็นจริงในปัจจุบัน',
-        4:'<strong>✅ ถูกต้อง!</strong> ตอบ C: would have caught — Third Conditional ใช้ If + had + V3 ตามด้วย would have + V3 เป็นการสมมติอดีตที่เปลี่ยนไม่ได้',
-        5:'<strong>✅ ถูกต้อง!</strong> ตอบ C — Second Conditional ที่ถูกต้องใช้ "were" (Subjunctive Mood) กับทุก subject รวมถึง I ด้วย และใช้ would (ไม่ใช่ will) ใน main clause',
-        6:'<strong>✅ ถูกต้อง!</strong> ตอบ A: Zero Conditional — ใช้ V1 ทั้งสองส่วน (press, rings) เป็นการบอกผลที่เกิดขึ้นเสมอเมื่อทำสิ่งนั้น เป็นเหตุ-ผลที่แน่นอน',
-        7:'<strong>✅ ถูกต้อง!</strong> ตอบ B: is — เนื่องจาก main clause ใช้ "will have" จึงเป็น First Conditional และ If clause ต้องใช้ V1 (present simple) คือ "is"',
-        8:'<strong>✅ ถูกต้อง!</strong> ตอบ D — Third Conditional ปฏิเสธใช้ "If + hadn\'t + V3, wouldn\'t have + V3" — A คือ Second Conditional, B ผิด grammar, C ผิดโครงสร้าง',
-        9:'<strong>✅ ถูกต้อง!</strong> ตอบ C: would — เป็นประโยคคำถาม Second Conditional (If + V2, would + V1) เพราะ "found" เป็น past tense ใน if clause จึง main clause ต้องใช้ would',
-        10:'<strong>✅ ถูกต้อง!</strong> ตอบ B — First Conditional ที่ถูกต้อง: If + V1 (see), will + V1 (tell) — A ผิดเพราะใช้ will ใน if clause, C ผิด tense, D ผิด conditional type'
-      };
       fb.innerHTML = origTexts[i];
     }
     Object.keys(answers).forEach(k => delete answers[k]);
